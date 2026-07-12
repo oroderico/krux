@@ -40,6 +40,9 @@ from ..krux_settings import (
     ButtonsSettings,
     t,
     locale_control,
+    TAMPER_CHECK_INPUT_SCAN_QR,
+    TAMPER_CHECK_INPUT_MANUAL,
+    TAMPER_CHECK_INPUT_ASK_EVERY_TIME,
 )
 from ..input import BUTTON_ENTER, BUTTON_PAGE, BUTTON_PAGE_PREV, BUTTON_TOUCH
 from ..sd_card import SDHandler
@@ -260,36 +263,15 @@ class SettingsPage(Page):
                 )
                 for ns in namespace_list
             ]
-            if settings_namespace.namespace == "settings.security":
-                regular_settings = []
-                tc_input_item = None
-                for setting in setting_list:
-                    if setting.attr == "tamper_check_code_input_mode":
-                        tc_input_item = (
-                            settings_namespace.label(setting.attr),
-                            self.setting(settings_namespace, setting),
-                        )
-                    else:
-                        regular_settings.append(
-                            (
-                                settings_namespace.label(setting.attr),
-                                self.setting(settings_namespace, setting),
-                            )
-                        )
-                items.extend(regular_settings)
-                items.append((t("Tamper Check Code"), self.enter_modify_tc_code))
-                if tc_input_item:
-                    items.append(tc_input_item)
-            else:
-                items.extend(
-                    [
-                        (
-                            settings_namespace.label(setting.attr),
-                            self.setting(settings_namespace, setting),
-                        )
-                        for setting in setting_list
-                    ]
-                )
+            items.extend(
+                [
+                    (
+                        settings_namespace.label(setting.attr),
+                        self.setting(settings_namespace, setting),
+                    )
+                    for setting in setting_list
+                ]
+            )
 
             # If there is only one item in the namespace, don't show a submenu
             # and instead jump straight to the item's menu
@@ -301,6 +283,10 @@ class SettingsPage(Page):
             if settings_namespace.namespace == Settings.namespace:
                 items.append((t("Factory Settings"), self.restore_settings))
                 back_status = self._settings_exit_check
+
+            # Case for security settings
+            if settings_namespace.namespace == "settings.security":
+                items.append((t("Tamper Check Code"), self.enter_modify_tc_code))
 
             submenu = Menu(self.ctx, items, back_status=back_status)
             index, status = submenu.run_loop()
@@ -384,8 +370,16 @@ class SettingsPage(Page):
                 theme.bg_color,
             )
             # Print value
+            if setting.attr == "tamper_check_code_input_mode":
+                current_category_text = {
+                    TAMPER_CHECK_INPUT_MANUAL: t("Manual"),
+                    TAMPER_CHECK_INPUT_SCAN_QR: t("Scan QR"),
+                    TAMPER_CHECK_INPUT_ASK_EVERY_TIME: t("Ask Every Time"),
+                }[current_category]
+            else:
+                current_category_text = str(current_category)
             self.ctx.display.draw_hcentered_text(
-                str(current_category),
+                current_category_text,
                 offset_y + title_lines * FONT_HEIGHT,
                 color,
                 theme.bg_color,

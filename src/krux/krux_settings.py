@@ -53,7 +53,7 @@ DEFAULT_LOCALE = "en-US"
 
 TAMPER_CHECK_INPUT_SCAN_QR = "Scan QR"
 TAMPER_CHECK_INPUT_MANUAL = "Manual"
-TAMPER_CHECK_INPUT_ASK_EVERY_TIME = "Ask every time"
+TAMPER_CHECK_INPUT_ASK_EVERY_TIME = "Ask Every Time"
 
 DEFAULT_TX_PIN = (
     board.config["board_info"]["CONNEXT_A"]
@@ -482,10 +482,10 @@ class SecuritySettings(SettingsNamespace):
     boot_flash_hash = CategorySetting("boot_flash_hash", False, [False, True])
     tamper_check_code_input_mode = CategorySetting(
         "tamper_check_code_input_mode",
-        TAMPER_CHECK_INPUT_ASK_EVERY_TIME,
+        TAMPER_CHECK_INPUT_MANUAL,
         [
-            TAMPER_CHECK_INPUT_SCAN_QR,
             TAMPER_CHECK_INPUT_MANUAL,
+            TAMPER_CHECK_INPUT_SCAN_QR,
             TAMPER_CHECK_INPUT_ASK_EVERY_TIME,
         ],
     )

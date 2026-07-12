@@ -621,6 +621,36 @@ def test_wrong_code_set_new_tc_code(amigo, mocker):
     assert mock_file.write_data == b""
 
 
+def test_security_settings_menu_uses_generic_settings_order(amigo, mocker):
+    from krux.krux_settings import Settings
+    from krux.pages import MENU_EXIT
+    from krux.pages.settings_page import SettingsPage
+
+    captured_labels = []
+
+    class FakeMenu:
+        back_index = -1
+
+        def __init__(self, _ctx, items, **_kwargs):
+            captured_labels.extend(label for label, _handler in items)
+
+        def run_loop(self):
+            return (0, MENU_EXIT)
+
+    mocker.patch("krux.pages.settings_page.Menu", FakeMenu)
+    ctx = create_ctx(mocker, [])
+    settings_page = SettingsPage(ctx)
+
+    assert settings_page.namespace(Settings().security)() == MENU_EXIT
+    assert captured_labels == [
+        "Shutdown Time",
+        "TC Flash Hash at Boot",
+        "Hide Mnemonics",
+        "TC Input Mode",
+        "Tamper Check Code",
+    ]
+
+
 def test_save_settings_on_sd(amigo, mocker, mocker_sd_card_ok):
     from krux.pages.settings_page import SettingsPage
     from krux.krux_settings import Settings, SD_PATH

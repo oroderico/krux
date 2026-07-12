@@ -60,6 +60,12 @@ Exported Uniform Resource (UR) QR codes, a widely adopted standard for exchangin
 
 # Changelog 25.10.1 - October 2025
 
+### Tamper Check Code Input Modes
+Tamper Check Code verification can now use Manual, Scan QR, or Ask Every Time
+input modes. Manual remains the default. QR input reduces typing friction and
+permits convenient use of longer user-known codes. Changing the Tamper Check
+Code still requires manual input.
+
 ### Bugfix: Krux encrypted mnemonic as a passphrase is invalid, but no error was raised
 Instead of displaying an error, the base43 encoded KEF Envelope was displayed and used as the passphrase - deriving the wrong wallet; since version 25.09.0
 Solution: better error handling when decrypted data is invalid for the current context; error: "Failed to load".  Stricter validation to ensure passphrases are ASCII-only strings.

@@ -161,9 +161,12 @@ Set the time it takes for Krux to automatically shut down. This feature not only
 <img src="../../img/maixpy_m5stickv/settings-tc-boot-250.png" align="right" class="m5stickv">
 <img src="../../img/maixpy_amigo/settings-tc-boot-300.png" align="right" class="amigo">
 
-Chose if you would like to run [Tamper Check Flash Hash](features/tamper-detection.md) every time the device is powered on.
+Choose if you would like to run [Tamper Check Flash Hash](features/tamper-detection.md) every time the device is powered on.
 
-Activating *TC Flash Hash* at boot helps prevent unauthorized use by requiring the *TC Code*. But is important to note, unlike a PIN, the *TC Code* does not provide access control over USB. This means that the device's memory remains accessible via USB, allowing it to be flashed with firmware that does not require the *TC Code*.
+Activating *TC Flash Hash* at boot prompts for the *TC Code* before generating the
+boot flash hash. Unlike a PIN, the *TC Code* does not provide access control over
+USB. This means that the device's memory remains accessible via USB, allowing it
+to be flashed with firmware that does not require the *TC Code*.
 
 <div style="clear: both"></div>
 
@@ -172,6 +175,21 @@ Activating *TC Flash Hash* at boot helps prevent unauthorized use by requiring t
 <img src="../../img/maixpy_amigo/settings-hide-mnemonic-300.png" align="right" class="amigo">
 
 When `True`, Krux will disable the [New Mnemonic](./usage/generating-a-mnemonic.md) menu and hide the words when [Loading a Mnemonic](./usage/loading-a-mnemonic.md). It will also hide the words when using [BIP85 to create a BIP39 Mnemonic](./usage/navigating-the-main-menu.md#bip85) and disable the [Backup Mnemonic](./usage/navigating-the-main-menu.md#backup-mnemonic) menu.
+
+<div style="clear: both"></div>
+
+#### TC Input Mode
+
+Choose how Krux asks for the Tamper Check Code when running
+[Tamper Check Flash Hash](features/tamper-detection.md). `Manual` is the default
+and preserves the existing keypad flow. `Scan QR` reads the code from a QR code,
+reducing typing friction and allowing convenient use of longer user-known codes.
+`Ask Every Time` lets you choose between manual and QR input each time.
+
+QR input trims surrounding whitespace and trailing line endings. QR codes with
+empty, malformed, or multiline contents are not accepted. Creating, changing, or
+replacing the Tamper Check Code always requires manual input, regardless of this
+setting.
 
 <div style="clear: both"></div>
 

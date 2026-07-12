@@ -56,7 +56,7 @@ class TCCodeVerification(Page):
         if method is None:
             return False
 
-        if method == "qr":
+        if method == TAMPER_CHECK_INPUT_SCAN_QR:
             tc_code = self._capture_from_qr()
         else:
             tc_code = self._capture_from_keypad(changing_tc_code)
@@ -89,23 +89,23 @@ class TCCodeVerification(Page):
 
     def _select_input_method(self, changing_tc_code):
         if changing_tc_code:
-            return "manual"
+            return TAMPER_CHECK_INPUT_MANUAL
 
         mode = Settings().security.tamper_check_code_input_mode
         if mode == TAMPER_CHECK_INPUT_ASK_EVERY_TIME:
             return self._prompt_input_method()
         if mode == TAMPER_CHECK_INPUT_SCAN_QR:
-            return "qr"
-        return "manual"
+            return TAMPER_CHECK_INPUT_SCAN_QR
+        return TAMPER_CHECK_INPUT_MANUAL
 
     def _prompt_input_method(self):
         menu = Menu(
             self.ctx,
             [
-                (t("Scan QR"), lambda: "qr"),
-                (t("Manual"), lambda: "manual"),
+                (t("Scan QR"), lambda: TAMPER_CHECK_INPUT_SCAN_QR),
+                (t("Manual"), lambda: TAMPER_CHECK_INPUT_MANUAL),
             ],
-            back_label=None,
+            back_status=lambda: ESC_KEY,
         )
         _, status = menu.run_loop()
         if status == ESC_KEY:
@@ -131,23 +131,23 @@ class TCCodeVerification(Page):
         self.flash_text(t("Point camera at TC Code QR"))
         qr_capture = QRCodeCapture(self.ctx)
         data, _ = qr_capture.qr_capture_loop()
-        tc_code = self._sanitize_tc_code(data)
+        tc_code = self._normalize_tc_code(data)
         if tc_code:
             return tc_code
         return False
 
-    def _sanitize_tc_code(self, tc_code):
+    def _normalize_tc_code(self, tc_code):
         if tc_code is None:
             return None
         if isinstance(tc_code, bytes):
             try:
                 tc_code = tc_code.decode()
-            except:
+            except UnicodeError:
                 return None
         if not isinstance(tc_code, str):
             return None
 
-        cleaned = "".join(tc_code.splitlines()).strip()
-        if cleaned == "":
+        cleaned = tc_code.strip()
+        if cleaned == "" or "\n" in cleaned or "\r" in cleaned:
             return None
         return cleaned
