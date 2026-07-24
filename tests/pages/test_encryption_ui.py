@@ -196,6 +196,32 @@ def test_load_qr_key_for_keypad_cancelled(m5stickv, mocker):
     key_generator.load_qr_encryption_key.assert_called_once_with()
 
 
+def test_load_scanned_kef_respects_decrypt_decline(m5stickv, mocker):
+    from krux import kef
+    from krux.input import BUTTON_ENTER, BUTTON_PAGE_PREV
+    from krux.pages import encryption_ui
+    from krux.pages.encryption_ui import EncryptionKey
+    from krux.pages.qr_capture import QRCodeCapture
+
+    envelope = kef.wrap(b"", 0, 10000, b"\xff" * 32)
+    btn_sequence = [BUTTON_PAGE_PREV, BUTTON_ENTER]
+    ctx = create_ctx(mocker, btn_sequence)
+    key_generator = EncryptionKey(ctx)
+    mocker.patch.object(
+        key_generator,
+        "capture_from_keypad",
+        side_effect=lambda *args, **kwargs: kwargs["scan_fn"](),
+    )
+    mocker.patch.object(
+        QRCodeCapture, "qr_capture_loop", return_value=(envelope, None)
+    )
+    decrypt_spy = mocker.spy(encryption_ui, "decrypt_kef")
+
+    assert key_generator.encryption_key() == envelope
+    decrypt_spy.assert_called_once_with(ctx, envelope)
+    assert ctx.input.wait_for_button.call_count == len(btn_sequence)
+
+
 def test_encrypt_cbc_sd_ui(m5stickv, mocker, mock_file_operations):
     from krux.wallet import Wallet
     from krux.krux_settings import Settings

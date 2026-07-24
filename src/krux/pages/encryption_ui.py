@@ -419,6 +419,8 @@ class EncryptionKey(Page):
     def __init__(self, ctx):
         super().__init__(ctx, None)
         self.ctx = ctx
+        self._qr_key_decryption_checked = False
+        self._qr_key_checked_value = None
 
     def key_strength(self, key_string):
         """Check the strength of a key."""
@@ -474,18 +476,23 @@ class EncryptionKey(Page):
 
     def encryption_key(self, creating=False):
         """Loads and returns an encryption key from the keypad or QR code."""
+        self._qr_key_decryption_checked = False
+        self._qr_key_checked_value = None
         key = self.load_key()
 
-        try:
-            # encryption key may have been encrypted
-            decrypted = self._decode_key(decrypt_kef(self.ctx, key))
-            key = decrypted if decrypted else key
-        except KeyError:
-            self.flash_error(t("Failed to decrypt"))
-            return None
-        except ValueError:
-            # ValueError=not KEF or declined to decrypt
-            pass
+        if not (
+            self._qr_key_decryption_checked and key == self._qr_key_checked_value
+        ):
+            try:
+                # encryption key may have been encrypted
+                decrypted = self._decode_key(decrypt_kef(self.ctx, key))
+                key = decrypted if decrypted else key
+            except KeyError:
+                self.flash_error(t("Failed to decrypt"))
+                return None
+            except ValueError:
+                # ValueError=not KEF or declined to decrypt
+                pass
 
         while True:
             if key in (None, "", b"", ESC_KEY, MENU_CONTINUE):
@@ -546,13 +553,16 @@ class EncryptionKey(Page):
 
         try:
             decrypted = self._decode_key(decrypt_kef(self.ctx, key))
-            return decrypted if decrypted else key
+            key = decrypted if decrypted else key
         except KeyError:
             self.flash_error(t("Failed to decrypt"))
             return None
         except ValueError:
             # ValueError=not KEF or declined to decrypt
-            return key
+            pass
+        self._qr_key_decryption_checked = True
+        self._qr_key_checked_value = key
+        return key
 
     def load_qr_encryption_key(self):
         """Loads and returns a key from a QR code"""
