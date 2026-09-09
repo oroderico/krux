@@ -393,6 +393,8 @@ translation_array = [
     "desde hexadecimal",
     "desde utf8",
     "es una dirección válida!",
+    "manual",
+    "escanear",
     "caja de cambio",
     "Tasa de éxito:",
     "deslizar",
