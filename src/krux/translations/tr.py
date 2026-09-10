@@ -195,6 +195,7 @@ translation_array = [
     "Orta",
     "Mesaj",
     "Mesaj:",
+    "En az 6 karakter gerekli",
     "Mini senaryo",
     "Ayna X Koordinatları",
     "İmza dosyası eksik",

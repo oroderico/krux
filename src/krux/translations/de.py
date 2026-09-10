@@ -195,6 +195,7 @@ translation_array = [
     "Mittel",
     "Nachricht",
     "Nachricht:",
+    "Mindestens 6 Zeichen erforderlich",
     "Miniscript",
     "X-Koordinaten spiegeln",
     "Fehlende Signaturdatei",

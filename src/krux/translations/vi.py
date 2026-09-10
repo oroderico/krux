@@ -195,6 +195,7 @@ translation_array = [
     "Trung bình",
     "Tin nhắn",
     "Tin nhắn:",
+    "Yêu cầu tối thiểu 6 ký tự",
     "Chi tiết nhỏ",
     "Tọa độ gương X",
     "Thiếu tập tin chữ ký",

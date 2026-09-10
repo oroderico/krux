@@ -195,6 +195,7 @@ translation_array = [
     "Gemiddeld",
     "Bericht",
     "Bericht:",
+    "Minimaal 6 tekens vereist",
     "Miniscript",
     "X-coördinaten spiegelen",
     "Handtekening bestand mist",

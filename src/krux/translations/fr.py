@@ -195,6 +195,7 @@ translation_array = [
     "Moyen",
     "Message",
     "Message\u2009:",
+    "Minimum 6 caractères requis",
     "Miniscript",
     "Refléter coordonnées X",
     "Fichier de signature manquant",

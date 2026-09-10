@@ -195,6 +195,7 @@ translation_array = [
     "Medio",
     "Mensaje",
     "Mensaje:",
+    "Se requieren al menos 6 caracteres",
     "Miniscript",
     "Espejo de coordenadas X",
     "Falta archivo de firma",
